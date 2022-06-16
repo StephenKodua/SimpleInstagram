@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        //adding Jitpack ( a package repository for JVM and Android projects) to project
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = "SimpleInstagram"
+include ':app'

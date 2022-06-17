@@ -14,9 +14,6 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 
-//get username and password
-//check if
-
 public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "LoginActivity";
     private EditText etUsername;
@@ -24,13 +21,10 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         //getCurrentUser() retrieves
         // the currently logged in ParseUser with a valid session
         if (ParseUser.getCurrentUser() != null){
@@ -55,7 +49,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void loginUser (String username, String password){
         Log.i(TAG, "onClick login button" + username);

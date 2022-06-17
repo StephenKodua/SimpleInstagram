@@ -23,6 +23,7 @@ import androidx.core.content.FileProvider;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -34,21 +35,22 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "MainActivity";
     //just an arbitrary number unique in application
-    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = -1;
-    private Button btnLogout;
+    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Button btnFeed;
     private Button btnCaptureImage;
     private Button btnSubmit;
     private EditText etDescription;
     private ImageView ivPostImage;
     private File photoFile;
     public String photoFileName = "photo.jpg";
+    protected PostsAdapter adapter;
+    protected List<Post> allPosts;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-
     }
 
     @Override
@@ -72,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
         etDescription = findViewById(R.id.etDescription);
         ivPostImage = findViewById(R.id.ivPostImage);
+        btnFeed = findViewById(R.id.btnFeed);
+
+        btnFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FeedActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
         //set on click on submit to launch app camera
         btnCaptureImage.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 launchCamera();
             }
         });
-        
-        //queryPosts();
+
+        queryPosts();
+
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +104,19 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "description cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //if no issue, get current user
+                if (photoFile == null || ivPostImage.getDrawable() == null){
+                    Toast.makeText(MainActivity.this, "There is no image", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //if no issue, get current user & save post
                 ParseUser currentUser = ParseUser.getCurrentUser();
-                //call method to save post
-                savePost(description, currentUser);
+                savePost(description, currentUser, photoFile);
+
+//                Intent i = new Intent(MainActivity.this, FeedActivity.class);
+//                startActivityForResult(i, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+                Intent i = new Intent (MainActivity.this, FeedActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -104,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference for future access
         photoFile = getPhotoFileUri(photoFileName); //getPhotoFileUri to populate photoFile variable
-
         // wrap File object into a content provider, required for API >= 24
         // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
         Uri fileProvider = FileProvider.getUriForFile(MainActivity.this, "com.codepath.fileprovider", photoFile);
@@ -121,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     //to get image taken by user
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         //Called when an activity you launched exits,
         // giving you the requestCode you started it with,
         // the resultCode it returned, and any additional data from it
@@ -131,11 +153,11 @@ public class MainActivity extends AppCompatActivity {
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
                 ivPostImage.setImageBitmap(takenImage);
+                Log.i(TAG, "onActivityResult: " + "load ivPostImage");
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private File getPhotoFileUri(String fileName) {
@@ -154,14 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //fix login activity (step 2)--> done
-    //get photo taking
-    //find somewhere better to put logout button (like 3 dots at right top corner) -> done
-
-    private void savePost(String description, ParseUser currentUser) {
+    private void savePost(String description, ParseUser currentUser, File photoFile) {
         Post post = new Post();
         post.setDescription(description);
-        //post.setImage
+        post.setImage(new ParseFile(photoFile));
         post.setUser(currentUser);
         post.saveInBackground(new SaveCallback() {
             @Override
@@ -171,8 +189,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
                 }
                 Log.i(TAG, "Post save was successful!");
-                //clear description so user does not save same post twice
+                //clear image and description so user does not save same post twice
                 etDescription.setText("");
+                ivPostImage.setImageResource(0);
+//                Intent intent = new Intent (MainActivity.this, FeedActivity.class);
+//                startActivity(intent);
             }
         });
     }

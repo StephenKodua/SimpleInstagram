@@ -93,9 +93,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        queryPosts();
-
-
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,9 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 //if no issue, get current user & save post
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 savePost(description, currentUser, photoFile);
-
-//                Intent i = new Intent(MainActivity.this, FeedActivity.class);
-//                startActivityForResult(i, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 
                 Intent i = new Intent (MainActivity.this, FeedActivity.class);
                 startActivity(i);

@@ -13,43 +13,46 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
-    private Context context;
-    private List<Post> posts;
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.Viewholder> {
+    Context context;
+    List<Post> posts;
 
-
-    public PostsAdapter(Context context, List<Post> posts) {
+    FeedAdapter (Context context, ArrayList<Post> posts){
         this.context = context;
         this.posts = posts;
     }
 
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_post, parent, false);
-        return new ViewHolder(view);
+        return new Viewholder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull Viewholder holder, int position) {
         Post post = posts.get(position);
         holder.bind(post);
+
     }
+
 
     @Override
     public int getItemCount() {
         return posts.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class Viewholder extends RecyclerView.ViewHolder {
 
         private TextView tvUsername;
         private ImageView ivImage;
         private TextView tvDescription;
 
-        public ViewHolder(@NonNull View itemView) {
+        public Viewholder(@NonNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             ivImage = itemView.findViewById(R.id.ivImage);
@@ -65,5 +68,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 Glide.with(context).load(image.getUrl()).into(ivImage);
             }
         }
+    }
+    // Clean all elements of the recycler
+    public void clear() {
+        posts.clear();
+        this.notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void AddAll(List<Post> list) {
+        posts.addAll(list);
     }
 }

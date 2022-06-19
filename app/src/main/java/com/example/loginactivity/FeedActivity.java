@@ -27,6 +27,7 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_feed);
         rvPosts = findViewById(R.id.rvPosts);
         allPosts = new ArrayList<>();
@@ -53,7 +54,6 @@ public class FeedActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -67,7 +67,6 @@ public class FeedActivity extends AppCompatActivity {
     private void loadNextDataFromApi(int offset) {
         queryPosts(offset);
     }
-
 
     private void queryPosts(int offset) {
         // specify what type of data we want to query - Post.class
@@ -97,13 +96,11 @@ public class FeedActivity extends AppCompatActivity {
                 for (Post post : posts) {
                     Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
-
                 // save received posts to list and notify adapter of new data
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
                 swipeContainer.setRefreshing(false);
             }
         });
-
     }
 }

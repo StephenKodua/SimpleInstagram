@@ -1,0 +1,43 @@
+package com.example.loginactivity;
+
+import android.util.Log;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.List;
+
+public class ProfileFragment extends PostsFragment{
+
+    @Override
+    protected void queryPosts() {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.KEY_USER);
+        query.whereEqualTo(Post.KEY_USER, ParseUser.getCurrentUser());
+        query.setLimit(20);
+        query.addDescendingOrder(Post.KEY_CREATED_AT);
+        //retrieve item from backend
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            //List<Post> objects is list of all post objects
+            public void done(List<Post> post_objects, ParseException e) {
+                if (e != null){
+                    //something gone wrong with populating data
+                    Log.e(TAG, "Issue with getting post object", e);
+                    return;
+                }
+                else{
+                    //retrieving items successful
+                    //iterate through all posts
+                    for (Post post : post_objects){
+                        Log.i(TAG, "Post object retrieval successful" + "username: " + post.getUser().getUsername());
+                    }
+                    allPosts.addAll(post_objects);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+}

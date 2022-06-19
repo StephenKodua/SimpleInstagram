@@ -25,7 +25,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.Viewholder> {
         this.posts = posts;
     }
 
-
     @NonNull
     @Override
     public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,7 +38,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.Viewholder> {
         holder.bind(post);
 
     }
-
 
     @Override
     public int getItemCount() {

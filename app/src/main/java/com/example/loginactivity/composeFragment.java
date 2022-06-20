@@ -48,7 +48,7 @@ public class composeFragment extends Fragment {
     public String photoFileName = "photo.jpg";
 
     public composeFragment() {
-        // Required empty public constructor
+        //Required empty public constructor
     }
 
     @Override
